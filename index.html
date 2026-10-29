@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Orbiting Menu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+        <!--მთავარი კონტეინერი-->
+    <div class="menu" style="--size: 300px; --orbit-dur: 40s; --orbit-items: 8; --avatar-size: 150px; --item-size: 150px; --orbit-spacing: 4em;">
+        <!--ცენტრალური ავატარი-->
+    <div class="avatar">
+            <span>👤</span>
+    </div>
+        <!--ორბიტა და მისი ელემენტები-->
+     <ul class="orbit">
+        <li class="item" style="--pos: 0;" data-category="Home">
+            <div class="item-wrap">🏠</div>
+        </li>
+        <li class="item" style="--pos: 1;" data-category="Profile">
+            <div class="item-wrap">👤</div>
+        </li>
+        <li class="item" style="--pos: 2;" data-category="Messige">
+            <div class="item-wrap">💬</div>
+        </li>
+        <li class="item" style="--pos: 3;" data-category="Settings">
+            <div class="item-wrap">⚙️</div>
+        </li>
+        <li class="item" style="--pos: 4;" data-category="Photos">
+            <div class="item-wrap">📷</div>
+        </li>
+        <li class="item" style="--pos: 5;" data-category="Music">
+            <div class="item-wrap">🎵</div>
+        </li>
+        <li class="item" style="--pos: 6;" data-category="Videos">
+            <div class="item-wrap">🎬</div>
+        </li>
+        <li class="item" style="--pos: 7;" data-category="Favorites">
+            <div class="item-wrap">⭐</div>
+        </li>
+    </ul>
+   </div>
+</body>
+</html>

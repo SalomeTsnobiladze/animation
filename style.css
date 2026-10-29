@@ -1,0 +1,158 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    font-family: system-ui, sans-serif;
+}
+
+/* ნაბიჯი 6-ისთვის: ბრაუზერს ვასწავლით, რომ --orbit-spacing სიგრძეა და შეიძლება გლუვად შეიცვალოს */
+@property --orbit-spacing {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 4em;
+}
+
+/* მთავარი კონტეინერი */
+.menu {
+    width: var(--size);
+    height: var(--size);
+    display: grid;
+    place-items: center;
+
+    --orbit-step: calc(360deg / var(--orbit-items));
+    --orbit-phase: 0deg;
+    --orbit-delay: 0s;
+}
+
+/* ნაბიჯი 1: ცენტრალური ავატარი */
+.avatar {
+    grid-area: 1 / -1;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+    background-color: #162a4c;
+    border-radius: calc(0.31 * var(--avatar-size));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+}
+
+/* ნაბიჯები 2 და 3: ორბიტა და მისი ბრუნვა */
+.orbit {
+    grid-area: 1 / -1;
+    display: grid;
+    place-items: center;
+    list-style: none;
+
+    /* რადიუსი აქ ითვლება, რომ ნაბიჯ 6-ში spacing-ის შეცვლა გადაითვალოს */
+    --orbit-radius: calc(0.5 * (var(--avatar-size) + var(--item-size)) + var(--orbit-spacing));
+
+    animation: orbit linear var(--orbit-dur) var(--orbit-delay) both infinite;
+    transition: --orbit-spacing 0.5s ease;
+}
+
+/* ნაბიჯი 2: თითოეული წრე + ნაბიჯი 5.1: პულსაცია */
+.orbit li {
+    --angle: calc(var(--pos) * var(--orbit-step));
+    grid-area: 1 / -1;
+    position: relative;
+    bottom: var(--orbit-radius);
+    transform-origin: 50% calc(50% + var(--orbit-radius));
+    transform: rotate(calc(-1 * var(--angle) + var(--orbit-phase)));
+
+    width: var(--item-size);
+    height: var(--item-size);
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+    animation: throbbing 1s ease-in-out infinite alternate;
+    animation-delay: calc(1s + var(--pos) * 0.15s);
+}
+
+/* ნაბიჯი 4: აიქონი (საპირისპირო ბრუნვა) */
+.item-wrap {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 4rem;
+
+    transform: rotate(calc(var(--angle) - var(--orbit-phase)));
+    animation: counter-orbit linear var(--orbit-dur) var(--orbit-delay) both infinite;
+}
+
+/* ნაბიჯი 5.3: ტექსტი ჰოვერზე (tooltip) */
+.item::after {
+    content: attr(data-category);
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding-top: 0;
+
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #162a4c;
+    white-space: nowrap;
+    pointer-events: none;
+
+    opacity: 0;
+    scale: 0.6;
+    transition: opacity 0.3s, scale 0.3s, padding-top 0.3s;
+
+    /* ტექსტიც საპირისპიროდ ბრუნავს, რომ სწორად იდგეს */
+    transform: rotate(calc(var(--angle) - var(--orbit-phase)));
+    animation: counter-orbit linear var(--orbit-dur) var(--orbit-delay) both infinite;
+}
+
+.item:hover {
+    z-index: 3;
+}
+
+.item:hover::after {
+    opacity: 1;
+    scale: 1;
+    padding-top: 7em; /* ტექსტი წრის ქვემოთ ჩამოდის */
+}
+
+/* ნაბიჯი 5.2: დაპაუზება */
+.orbit:hover,
+.orbit:hover .item-wrap,
+.orbit:hover .item::after,
+.item:hover {
+    animation-play-state: paused;
+}
+
+/* ნაბიჯი 6: ორბიტის გაფართოება */
+.avatar:hover ~ .orbit {
+    --orbit-spacing: 6em;
+}
+
+/* ანიმაციები */
+@keyframes orbit {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+@keyframes counter-orbit {
+    from { transform: rotate(calc(0deg + var(--angle) - var(--orbit-phase))); }
+    to   { transform: rotate(calc(-360deg + var(--angle) - var(--orbit-phase))); }
+}
+
+@keyframes throbbing {
+    from { scale: 0.95; }
+    to   { scale: 1.05; }
+}
